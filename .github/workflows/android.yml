@@ -13,5 +13,5 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - run: yarn install
+      - run: yarn pod-install
       - run: cd android && ./gradlew assembleRelease
