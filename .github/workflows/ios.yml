@@ -13,4 +13,5 @@ jobs:
           pod install
       - run: |
           cd ios
-          xcodebuild -workspace 'GitProject.xcworkspace' -scheme 'GitProject' -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath build
+          xcodebuild -workspace 'MyProject.xcworkspace' -scheme 'MyProject' -configuration Debug 
+          -destination 'generic/platform=iOS Simulator' -derivedDataPath build
