@@ -6,11 +6,6 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: yarn install
-      - run: |
-          cd ios
-          pod install
       - run: |
           echo "$CERT" | base64 --decode > signing_cert.p12
           echo "$PROFILE" | base64 --decode > profile.mobileprovision
