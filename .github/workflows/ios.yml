@@ -27,15 +27,3 @@ jobs:
       # Install provisioning profile
       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
       cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-      
-                echo "$CERT" | base64 --decode > signing_cert.p12
-                echo "$PROFILE" | base64 --decode > profile.mobileprovision
-      
-                security create-keychain -p "apple" build.keychain
-                security default-keychain -s build.keychain
-                security unlock-keychain -p "apple" build.keychain
-                security import signing_cert.p12 -k build.keychain -P "N3ZU9Y7BBF" -T /usr/bin/codesign
-                security set-key-partition-list -S apple-tool:,apple: -s -k "apple" build.keychain
-      
-                mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-                cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
