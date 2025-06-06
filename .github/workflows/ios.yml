@@ -6,6 +6,11 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
+      - uses: actions/checkout@v4
+      - run: yarn install
+      - run: |
+          cd ios
+          pod install
       - run: |
           cd ios
           xcodebuild -workspace 'MyProject.xcworkspace' -scheme 'MyProject' -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath build
