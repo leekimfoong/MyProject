@@ -1,0 +1,9 @@
+name: Export IPA
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+      - run: xcodebuild -exportArchive -archivePath "workcenterSD.xcarchive" -exportPath "output"
