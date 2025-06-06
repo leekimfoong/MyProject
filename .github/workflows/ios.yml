@@ -7,23 +7,5 @@ jobs:
     runs-on: macOS-latest
     steps:
       - run: |
-          echo "$CERT" | base64 --decode > signing_cert.p12
-          echo "$PROFILE" | base64 --decode > profile.mobileprovision
-    
-          # Create and unlock keychain
-          security create-keychain -p "apple" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "apple" build.keychain
-    
-          # Import certificate
-          security import signing_cert.p12 \
-            -k build.keychain \
-            -P "$CERT_PASSWORD" \
-            -A
-    
-          # Set partition to allow codesign
-          security set-key-partition-list -S apple-tool:,apple: -s -k "apple" build.keychain
-    
-          # Install provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cd ios
+          xcodebuild -workspace 'MyProject.xcworkspace' -scheme 'MyProject' -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath build
