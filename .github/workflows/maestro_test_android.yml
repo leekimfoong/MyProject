@@ -6,19 +6,6 @@ jobs:
   maestro-tests:
     runs-on: ubuntu-latest
     steps:
-      # Checkout your code
-      - uses: actions/checkout@v4
-
-      # Set up Java (required for Android SDK)
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      # Install Android SDK
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       # Create and start emulator
       - name: Create Android emulator
         run: |
