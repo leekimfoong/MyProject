@@ -22,11 +22,14 @@ jobs:
       # Create and start emulator
       - name: Create Android emulator
         run: |
-          echo "y" | sdkmanager --install 'system-images;android-33;google_apis;x86_64'
-          avdmanager create avd -n test -k 'system-images;android-33;google_apis;x86_64' --device "pixel"
-          nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -no-audio -no-boot-anim &
-          adb wait-for-device
-          adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-35;google_apis;x86_64'
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n test -d "Nexus 5" -k 'system-images;android-35;google_apis;x86_64' --force
+          echo "y" | $ANDROID_HOME/emulator/emulator -list-avds
+          echo "Starting emulator"
+          nohup $ANDROID_HOME/emulator/emulator -avd test -no-snapshot -no-window -no-audio -no-boot-anim -accel on > /dev/null 2>&1 &
+          $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d "\r") ]]; do sleep 1; done; input keyevent 82'
+          $ANDROID_HOME/platform-tools/adb devices
+          echo "Emulator started"
 
       # Install Maestro CLI
       - name: Install Maestro CLI
