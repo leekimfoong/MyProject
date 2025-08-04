@@ -1,22 +1,49 @@
-name: Maestro E2E Tests (Android)
+name: Android Emulator CI
 
 on: workflow_dispatch
 
 jobs:
-  maestro-tests:
+  test:
     runs-on: ubuntu-latest
     steps:
-      # Create and start emulator
-      - name: Create Android emulator
-        run: |
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-35;google_apis;x86_64'
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n test -d "Nexus 5" -k 'system-images;android-35;google_apis;x86_64' --force
-          echo "y" | $ANDROID_HOME/emulator/emulator -list-avds
-          echo "Starting emulator"
-          nohup $ANDROID_HOME/emulator/emulator -avd test -no-snapshot -no-window -no-audio -no-boot-anim -accel on > /dev/null 2>&1 &
-          $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d "\r") ]]; do sleep 1; done; input keyevent 82'
-          $ANDROID_HOME/platform-tools/adb devices
-          echo "Emulator started"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Android SDK tools
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Start Android Emulator and Run Instrumented Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel
+          emulator-options: -no-window -no-audio -no-boot-anim
+          disable-animations: true
+          script: ./gradlew connectedDebugAndroidTest --stacktrace
 
       # Install Maestro CLI
       - name: Install Maestro CLI
