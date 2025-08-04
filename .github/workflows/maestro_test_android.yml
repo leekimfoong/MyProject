@@ -1,1 +1,39 @@
+name: Maestro E2E Tests (Android)
 
+on: workflow_dispatch
+
+jobs:
+  maestro-tests:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout your code
+      - uses: actions/checkout@v4
+
+      # Set up Java (required for Android SDK)
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Install Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      # Create and start emulator
+      - name: Create Android emulator
+        run: |
+          echo "y" | sdkmanager --install 'system-images;android-33;google_apis;x86_64'
+          avdmanager create avd -n test -k 'system-images;android-33;google_apis;x86_64' --device "pixel"
+          nohup emulator -avd test -no-window -no-audio -no-boot-anim &
+          adb wait-for-device
+          adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+
+      # Install Maestro CLI
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      # Run Maestro tests
+      - name: Run Maestro tests
+        run: maestro test ./maestro/ # Update path as needed
