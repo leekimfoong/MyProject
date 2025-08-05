@@ -44,8 +44,8 @@ jobs:
           emulator-options: -no-window -no-audio -no-boot-anim
           disable-animations: true
           script: |
-            adb install -r app/build/outputs/apk/debug/app-debug.apk
-            adb shell monkey -p com.myproject -c android.intent.category.LAUNCHER 1
+            adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+            #adb shell monkey -p com.myproject -c android.intent.category.LAUNCHER 1
         
       # Install Maestro CLI
       - name: Install Maestro CLI
