@@ -22,7 +22,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            cd android
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
@@ -30,7 +29,7 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: cd android && ./gradlew assembleDebug --stacktrace
 
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest --stacktrace
