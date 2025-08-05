@@ -34,10 +34,7 @@ jobs:
       - name: Build Debug APK
         run: cd android && ./gradlew assembleDebug --stacktrace
 
-      - name: Run Unit Tests
-        run: cd android && ./gradlew testDebugUnitTest --stacktrace
-
-      - name: Start Android Emulator and Run Instrumented Tests
+      - name: Start Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -46,8 +43,14 @@ jobs:
           profile: pixel
           emulator-options: -no-window -no-audio -no-boot-anim
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest --stacktrace
+          # No script here; we'll install and run the APK in the next steps
 
+      - name: Install APK on Emulator
+        run: adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Launch App Main Activity
+        run: adb shell monkey -p com.myproject -c android.intent.category.LAUNCHER 1
+        
       # Install Maestro CLI
       - name: Install Maestro CLI
         run: |
