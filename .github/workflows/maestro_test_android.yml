@@ -35,7 +35,7 @@ jobs:
         run: cd android && ./gradlew assembleDebug --stacktrace
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: cd android && ./gradlew testDebugUnitTest --stacktrace
 
       - name: Start Android Emulator and Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
