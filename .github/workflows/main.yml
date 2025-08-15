@@ -20,6 +20,6 @@ jobs:
         uses: theolm/maestro-run@v0.2.0-alpha
         with:
           apk-path: 'app/build/outputs/apk/debug/app-debug.apk'
-          test-path: './maestro/'
+          test-path: 'maestro/'
           report-name: 'report_name'
           record: 'true'
