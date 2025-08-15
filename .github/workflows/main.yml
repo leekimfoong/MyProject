@@ -1,0 +1,25 @@
+name: Run UI Tests with Maestro
+
+on: workflow_dispatch
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        
+      - name: Yarn Install
+        run: yarn install
+
+      - name: Build Debug APK
+        run: cd android && ./gradlew assembleDebug --stacktrace
+
+      - name: Run UI Tests with Maestro
+        uses: theolm/maestro-run@v0.2.0-alpha
+        with:
+          apk-path: 'app/build/outputs/apk/debug/app-debug.apk'
+          test-path: './maestro'
+          report-name: 'report_name'
+          record: 'true'
